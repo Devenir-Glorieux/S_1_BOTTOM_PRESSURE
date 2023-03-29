@@ -14,7 +14,6 @@ layout = [
      ],
     [sg.Text('Значения вискозиметра 3rpm      '), sg.InputText(size=(8, 0.5)), 
      ],
-    #[sg.Button('Расчет')]
     [sg.Output(size=(88, 2))],
     [sg.Submit('Расчет')]
 ]
