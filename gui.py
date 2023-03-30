@@ -1,6 +1,6 @@
 import PySimpleGUI as sg
 layout = [
-    [sg.Text('Глубина перфорации TVD (м)     '), sg.InputText(size=(8, 0.5))
+    [sg.Text('Глубина перфорации TVD (м)     '), sg.InputText(key='-tvd-', size=(8, 0.5))
      ],
     [sg.Text('Диаметр лифта НКТ (мм)            '), sg.InputText(size=(8, 0.5))
      ],
@@ -14,15 +14,19 @@ layout = [
      ],
     [sg.Text('Значения вискозиметра 3rpm      '), sg.InputText(size=(8, 0.5)), 
      ],
-    [sg.Output(size=(88, 2))],
+    [sg.Output(size=(88, 20))],
     [sg.Submit('Расчет')]
 ]
+
 window = sg.Window('Расчет забойного давления', layout)
-while True:                             # The Event Loop
-    event, values = window.read()
-    # print(event, values) #debug
-    if event in (None, 'Exit', 'Cancel'):
-        break
+#while True:                             # The Event Loop
+#    event, values = window.read()
+#    print(event, values) #debug
+    # if event in (None, 'Exit', 'Cancel'):
+    #     break
 
+#    if (event == sg.WINDOW_CLOSED) and sg.popup_yes_no('Вы серьезно?') == 'Yes':
+#        break
 
+#sg.Popup(event, values, values['-tvd-'])
 
