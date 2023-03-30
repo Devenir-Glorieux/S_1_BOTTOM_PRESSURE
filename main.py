@@ -8,7 +8,7 @@ if type_well == "Y" or type_well == "y" or type_well == "да" or type_well == "
     print ('Глубина перфорации TVD (m) = ', end=" ")
     tvd = int(input ())
 
-    print ('Диаметр лифта НКТ (m) = ', end=" ")     
+    print ('Внутренний диаметр НКТ (m) = ', end=" ")     
     pipe_diametr = float(input ())
 
     print ('Длина лифта НКТ (m) = ', end=" ")           
