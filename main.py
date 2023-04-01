@@ -144,5 +144,5 @@ else:
         pressure_bottom = p_stat + data_entry["whp_key"] - friction
                      
         non_fl()
-
+input()
 #root.mainloop()
