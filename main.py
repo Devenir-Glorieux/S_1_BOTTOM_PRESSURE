@@ -1,11 +1,4 @@
 import math
-from tkinter import *
-from tkinter import ttk
- 
- 
-# root = Tk()
-# root.title("РАЧЕТ ЗАБОЙНОГО ДАВЛЕНИЯ")
-# root.geometry("650x800")
 
 def new_fl():
     print ('Скорость потока = ', round(velocity, 4), 'm/sec')
@@ -26,15 +19,6 @@ def non_fl():
     print ('Давление на забое = ', round(pressure_bottom, 4), 'bar')    
 
 g = 9.8066
-
-# entry = ttk.Entry()
-# entry.pack(anchor=NW, padx=50, pady=10)
-  
-# btn = ttk.Button(text="Расчет", command=new_fl)
-# btn.pack(anchor=NW, padx=6, pady=6)
- 
-# label = ttk.Label()
-# label.pack(anchor=NW, padx=6, pady=6)
 
 print ('Глубина перфорации TVD (m) = ', end=" ")
 tvd = int(input ())
@@ -145,4 +129,4 @@ else:
                      
         non_fl()
 input()
-#root.mainloop()
+
