@@ -9,7 +9,8 @@ import os
 
 window = Tk()
 window.title ('Calculate well pressure and frictional losses')
-window.geometry ('500x515+600+100')
+window.geometry ('500x543+600+100')
+window.resizable(False, False)
 
 bg1='gainsboro' 
 bg2='rosybrown'
@@ -21,46 +22,76 @@ bg3='darkgray'
 up_frame  =  Frame(window,  width=300,  height=  400,  bg=bg1)
 up_frame.grid(row=0,  column=0,  padx=5,  pady=5, sticky='w'+'e'+'n'+'s')
 
-right_frame_1 = Frame(up_frame, width=50,  height=  10,  bg=bg3)
+right_frame_1 = Frame(up_frame, width=90,  height= 10,  bg=bg3)
 right_frame_1.grid(row=3,  column=2,  padx=0,  pady=0, sticky='w'+'e'+'n'+'s')
+right_frame_1f = Frame(up_frame, width=5,  height=  10,  bg=bg3)
+right_frame_1f.grid(row=3,  column=3,  padx=0,  pady=0, sticky='w'+'e'+'n'+'s')
 
-right_frame_2 = Frame(up_frame, width=50,  height=  10,  bg=bg3)
+right_frame_2 = Frame(up_frame, width=90,  height=  10,  bg=bg3)
 right_frame_2.grid(row=4,  column=2,  padx=0,  pady=0, sticky='w'+'e'+'n'+'s')
+right_frame_2f = Frame(up_frame, width=5,  height= 10,  bg=bg3)
+right_frame_2f.grid(row=4,  column=3,  padx=0,  pady=0, sticky='w'+'e'+'n'+'s')
 
-right_frame_3 = Frame(up_frame, width=50,  height=  10,  bg=bg3)
+right_frame_3 = Frame(up_frame, width=90,  height=  10,  bg=bg3)
 right_frame_3.grid(row=5,  column=2,  padx=0,  pady=0, sticky='w'+'e'+'n'+'s')
+right_frame_3f = Frame(up_frame, width=5,  height=  10,  bg=bg3)
+right_frame_3f.grid(row=5,  column=3,  padx=0,  pady=0, sticky='w'+'e'+'n'+'s')
 
 down_frame  =  Frame(window,  width=300,  height= 420,  bg=bg2)
 down_frame.grid(row=1,  column=0,  padx=5,  pady=5, sticky='w'+'e'+'n'+'s')
 
 type_well = IntVar()
-fluid_type = IntVar()
-switch_btn = IntVar()
+fluid_type = IntVar(value=1)
+switch_btn = IntVar(value=1)
 
 #Затемнение областей ввода данных по реологии
 def flag_fluid_type():
-    if fluid_type.get() == 1:
-        mud_visc_300_entry = ttk.Entry(up_frame, state=DISABLED) 
-        mud_visc_300_entry.grid(row=8, column=1, padx=5, pady=5, sticky='w'+'e'+'n'+'s')
-        mud_visc_3_entry = ttk.Entry(up_frame, state=DISABLED)
-        mud_visc_3_entry.grid(row=9, column=1, padx=5, pady=5, sticky='w'+'e'+'n'+'s')
+    if fluid_type.get() == 0:
+        mud_visc_300_entry.configure(state=ACTIVE) 
+        mud_visc_3_entry.configure(state=ACTIVE)
+        
     else:
-        mud_visc_300_entry = ttk.Entry(up_frame, state=ACTIVE) 
-        mud_visc_300_entry.grid(row=8, column=1, padx=5, pady=5, sticky='w'+'e'+'n'+'s')
-        mud_visc_300_entry.insert(0, "20")
-        mud_visc_3_entry = ttk.Entry(up_frame, state=ACTIVE)
-        mud_visc_3_entry.grid(row=9, column=1, padx=5, pady=5, sticky='w'+'e'+'n'+'s')
-        mud_visc_3_entry.insert(0, "3")
+        mud_visc_300_entry.configure(state=DISABLED) 
+        mud_visc_3_entry.configure(state=DISABLED)
     return    
 
-#Затемнение переключателя насоса
+#Затемнение полей от режима работы скважины
 def injection_well_flag():
     if type_well.get() == 0:
         btn_switch.configure(state = ACTIVE)
+        oil_density_entry.configure(state=ACTIVE)
+        oil_den_combobox.configure(state=ACTIVE)
+        esp_depth_entry.configure(state = ACTIVE)
+        esp_depth_combobox.configure(state = ACTIVE)
+        dfl_entry.configure(state = ACTIVE)
+        dfl_combobox.configure(state = ACTIVE)
+        anp_entry.configure(state = ACTIVE)
+        anp_combobox.configure(state = ACTIVE)
+
     else:
-        btn_switch.configure(state = DISABLED) 
+        btn_switch.configure(state = DISABLED)
+        oil_density_entry.configure(state = DISABLED)
+        oil_den_combobox.configure(state = DISABLED)
+        esp_depth_entry.configure(state = DISABLED)
+        esp_depth_combobox.configure(state = DISABLED)
+        dfl_entry.configure(state = DISABLED)
+        dfl_combobox.configure(state = DISABLED)
+        anp_entry.configure(state = DISABLED)
+        anp_combobox.configure(state = DISABLED)
+
+        
     return    
 
+#Затемнение поля ввода глубины ЭЦН
+def ESP_off():
+    if switch_btn.get() == 0:
+        esp_depth_entry.configure(state=DISABLED) 
+        esp_depth_combobox.configure(state=DISABLED)
+        
+    else:
+        esp_depth_entry.configure(state=ACTIVE) 
+        esp_depth_combobox.configure(state=ACTIVE)
+    return    
 
 #Функция очистки ячеек
 def Clear():
@@ -76,6 +107,10 @@ def Clear():
     spm_entry.delete(0, END)
     pl_entry.delete(0, END)
     dp_entry.delete(0, END)
+    anp_entry.delete(0, END)
+    oil_density_entry.delete(0, END)
+    esp_depth_entry.delete(0, END)
+    dfl_entry.delete(0, END)
     return
 
 #Функция сохранения результатов расчета
@@ -136,8 +171,7 @@ def Calculate():
     elif injr_units.get() == 'bbl/h':
         inj_rate = inj_rate/22640
     elif injr_units.get() == 'bbl/d':
-        inj_rate = ((inj_rate*0.26205)/86400)           
-            
+        inj_rate = ((inj_rate*0.26205)/86400)                 
     #--------------------------------------------
     whp = float(whp_entry.get())
     if whp_units.get() == 'bar':
@@ -162,7 +196,6 @@ def Calculate():
     #     st.insert(END, '_________________________________________________________' + '\n')
     # density = float(density)
 
-
     spm = float(spm_entry.get())
     #--------------------------------------------
     pl = float(pl_entry.get())
@@ -177,7 +210,36 @@ def Calculate():
     else: 
         dp = dp*25.4
     #--------------------------------------------
-
+    oil_density = float(oil_density_entry.get())
+    if oil_density_units.get() == 'kg/m\u00B3':
+        oil_density = oil_density    
+    elif oil_density_units.get() == 'g/cm\u00B3': 
+        oil_density = oil_density * 1000
+    elif oil_density_units.get() == 'lb/gal': 
+        oil_density = oil_density * 119.8
+    else:
+        oil_density = oil_density * 16.02  
+    #--------------------------------------------    
+    esp_depth = float(esp_depth_entry.get())
+    if esp_depth_units.get() == 'm':
+        esp_depth = esp_depth    
+    else: 
+        esp_depth = esp_depth*0.3048
+    #-------------------------------------------- 
+    dfl = float(dfl_entry.get())
+    if dfl_units.get() == 'm':
+        dfl = dfl    
+    else:
+        dfl = dfl*0.3048
+    #-------------------------------------------- 
+    anp = float(anp_entry.get())
+    if anp_units.get() == 'bar':
+        anp = anp    
+    elif anp_units.get() == 'psi': 
+        anp = anp*0.0689476
+    else:
+        anp = anp*0.01
+    #--------------------------------------------
     
 # Кострукция вычисления
     if type_well.get() == 1:
@@ -227,7 +289,9 @@ def Calculate():
             Pperf = ((0.2369*((inj_rate*375)**2)*(density*0.00834))/((Np**2)*((dp/25.4)**4)*Cd**2))/14.5
             if switch_btn.get() == 0:
                 pressure_bottom = p_stat + whp + friction + Pperf
-            else: pressure_bottom = p_stat - whp - friction - Pperf
+            else: 
+                pressure_bottom = p_stat - whp - friction - Pperf
+                pressure_bottom_d = anp + ((tvd-esp_depth)*density/10000) + ((esp_depth-dfl)*oil_density/10000)
                 
          
         else: #добывающая НЕньютоновская
@@ -247,38 +311,44 @@ def Calculate():
             Pperf = ((0.2369*((inj_rate*375)**2)*(density*0.00834))/((Np**2)*((dp/25.4)**4)*Cd**2))/14.5
             if switch_btn.get() == 0:
                 pressure_bottom = p_stat + whp + friction + Pperf
-            else: pressure_bottom = p_stat - whp - friction - Pperf
+            else:
+                pressure_bottom = p_stat - whp - friction - Pperf
+                pressure_bottom_d = anp + ((tvd-esp_depth)*density/10000) + ((esp_depth-dfl)*oil_density/10000)
+
 
 #Вставляю строки в поле text
 
     if whp_units.get() == 'bar':
-        st.insert(END, 'Hydrostatic pressure (bar)  ' + str(round(p_stat, 4)) + '\n')
-        st.insert(END, 'Fluid flow speed (m/sec) ' + str(round(velocity, 4)) + '\n')
-        st.insert(END, 'Reynolds number ' + str(round(re, 4)) + '\n')
+        st.insert(END, 'Hydrostatic pressure (bar)  ' + str(round(p_stat, 2)) + '\n')
+        st.insert(END, 'Fluid flow speed (m/sec) ' + str(round(velocity, 2)) + '\n')
+        st.insert(END, 'Reynolds number ' + str(round(re, 2)) + '\n')
         st.insert(END, 'friction coefficient  ' + str(round(kfr, 4)) + '\n')
-        st.insert(END, 'Friction loss in pipes (bar)  ' + str(round(friction, 4)) + '\n')
-        st.insert(END, 'Friction loss in perforations (bar)  ' + str(round(Pperf, 4)) + '\n')
-        st.insert(END, 'Bottom hole pressure (bar)  ' + str(round(pressure_bottom, 4)) + '\n')
+        st.insert(END, 'Friction loss in pipes (bar)  ' + str(round(friction, 2)) + '\n')
+        st.insert(END, 'Friction loss in perforations (bar)  ' + str(round(Pperf, 2)) + '\n')
+        st.insert(END, 'Bottom hole pressure (bar)  ' + str(round(pressure_bottom, 2)) + '\n')
+        st.insert(END, 'Bottom hole pressure according Dinamic Fluid Level (bar)  ' + str(round(pressure_bottom_d, 2)) + '\n')
         st.insert(END, '_________________________________________________________' + '\n')
         st.see('end')
     elif whp_units.get() == 'psi':   
-        st.insert(END, 'Hydrostatic pressure (psi)  ' + str(round((p_stat*14.504), 4)) + '\n')
-        st.insert(END, 'Fluid flow speed (m/sec) ' + str(round(velocity, 4)) + '\n')
-        st.insert(END, 'Reynolds number ' + str(round(re, 4)) + '\n')
+        st.insert(END, 'Hydrostatic pressure (psi)  ' + str(round((p_stat*14.504), 2)) + '\n')
+        st.insert(END, 'Fluid flow speed (m/sec) ' + str(round(velocity, 2)) + '\n')
+        st.insert(END, 'Reynolds number ' + str(round(re, 2)) + '\n')
         st.insert(END, 'friction coefficient  ' + str(round(kfr, 4)) + '\n')
-        st.insert(END, 'Friction loss in pipes (psi)  ' + str(round((friction*14.504), 4)) + '\n')
-        st.insert(END, 'Friction loss in perforations (psi)  ' + str(round((Pperf*14.504), 4)) + '\n')
-        st.insert(END, 'Bottom hole pressure (psi)  ' + str(round((pressure_bottom*14.504), 4)) + '\n')
+        st.insert(END, 'Friction loss in pipes (psi)  ' + str(round((friction*14.504), 2)) + '\n')
+        st.insert(END, 'Friction loss in perforations (psi)  ' + str(round((Pperf*14.504), 2)) + '\n')
+        st.insert(END, 'Bottom hole pressure (psi)  ' + str(round((pressure_bottom*14.504), 2)) + '\n')
+        st.insert(END, 'Bottom hole pressure according Dinamic Fluid Level (psi)  ' + str(round(pressure_bottom_d*14.504, 2)) + '\n')
         st.insert(END, '_________________________________________________________' + '\n')
         st.see('end')
     else: 
-        st.insert(END, 'Hydrostatic pressure (kPa)  ' + str(round((p_stat*100), 4)) + '\n')
-        st.insert(END, 'Fluid flow speed (m/sec) ' + str(round(velocity, 4)) + '\n')
-        st.insert(END, 'Reynolds number ' + str(round(re, 4)) + '\n')
+        st.insert(END, 'Hydrostatic pressure (kPa)  ' + str(round((p_stat*100), 2)) + '\n')
+        st.insert(END, 'Fluid flow speed (m/sec) ' + str(round(velocity, 2)) + '\n')
+        st.insert(END, 'Reynolds number ' + str(round(re, 2)) + '\n')
         st.insert(END, 'friction coefficient  ' + str(round(kfr, 4)) + '\n')
-        st.insert(END, 'Friction loss in pipes (kPa)  ' + str(round((friction*100), 4)) + '\n')
-        st.insert(END, 'Friction loss in perforations (kPa)  ' + str(round((Pperf*100), 4)) + '\n')
-        st.insert(END, 'Bottom hole pressure (kPa)  ' + str(round((pressure_bottom*100), 4)) + '\n')
+        st.insert(END, 'Friction loss in pipes (kPa)  ' + str(round((friction*100), 2)) + '\n')
+        st.insert(END, 'Friction loss in perforations (kPa)  ' + str(round((Pperf*100), 2)) + '\n')
+        st.insert(END, 'Bottom hole pressure (kPa)  ' + str(round((pressure_bottom*100), 2)) + '\n')
+        st.insert(END, 'Bottom hole pressure according Dinamic Fluid Level (kPa)  ' + str(round(pressure_bottom_d*100, 2)) + '\n')
         st.insert(END, '_________________________________________________________' + '\n')
         st.see('end')
     
@@ -286,9 +356,10 @@ def Calculate():
     
      
 #Создаю и размещаю виджеты 
+width_entr = 10
 
 Label(up_frame, text='Perforation depth (TVD) ', bg=bg1).grid(row=1, column=0, padx=5, pady=5, sticky='w') 
-tvd_entry = ttk.Entry(up_frame) 
+tvd_entry = ttk.Entry(up_frame, width=width_entr) 
 tvd_entry.grid(row=1, column=1, padx=5, pady=5, sticky='w'+'e'+'n'+'s')
 tvd_entry.insert(0, "1800")
 
@@ -301,7 +372,7 @@ tvd_units_combobox.grid(row=1, column=0,  padx=5, pady=5, sticky='e')
 #_______________________________________________________________________________________________________________
 
 Label(up_frame, text='Pipe diameter ', bg=bg1).grid(row=2, column=0, padx=5, pady=5, sticky='w') 
-pipe_diametr_entry = ttk.Entry(up_frame)
+pipe_diametr_entry = ttk.Entry(up_frame, width=width_entr)
 pipe_diametr_entry.grid(row=2, column=1, padx=5, pady=5, sticky='w'+'e'+'n'+'s')
 pipe_diametr_entry.insert(0, "76")
 
@@ -315,7 +386,7 @@ pipe_diametr_combobox.grid(row=2, column=0,  padx=5, pady=5, sticky='e')
 # pipe_diametr_units.grid(row=2, column=0, padx=5, pady=5, sticky='e')
 #_______________________________________________________________________________________________________________
 Label(up_frame, text = 'Pipe length ', bg=bg1).grid(row=3,column=0, padx=5, pady=5, sticky='w') 
-pipe_lenght_entry = ttk.Entry(up_frame) 
+pipe_lenght_entry = ttk.Entry(up_frame, width=width_entr) 
 pipe_lenght_entry.grid(row=3, column=1, padx=5, pady=5, sticky='w'+'e'+'n'+'s')
 pipe_lenght_entry.insert(0, "1800")
 
@@ -325,12 +396,12 @@ pipe_lenght_combobox = ttk.Combobox (up_frame, textvariable = pipe_lenght_units,
 pipe_lenght_combobox.grid(row=3, column=0,  padx=5, pady=5, sticky='e')
 #_______________________________________________________________________________________________________________
 Label(up_frame, text = 'Absolute pipe roughness ', bg=bg1).grid(row=4,column=0, padx=5, pady=5, sticky='w')
-absolute_pipe_roughness_entry = ttk.Entry(up_frame) 
+absolute_pipe_roughness_entry = ttk.Entry(up_frame, width=width_entr) 
 absolute_pipe_roughness_entry.grid(row=4, column=1, padx=5, pady=5, sticky='w'+'e'+'n'+'s')
 absolute_pipe_roughness_entry.insert(0, "0.00002")
 #_______________________________________________________________________________________________________________
 Label(up_frame, text = 'Well rate ', bg=bg1).grid(row=5, column=0, padx=5, pady=5, sticky='w')
-inj_rate_entry = ttk.Entry(up_frame) 
+inj_rate_entry = ttk.Entry(up_frame, width=width_entr) 
 inj_rate_entry.grid(row=5, column=1, padx=5, pady=5, sticky='w'+'e'+'n'+'s')
 inj_rate_entry.insert(0, "0.010667")
 
@@ -340,35 +411,72 @@ injr_combobox = ttk.Combobox (up_frame, textvariable = injr_units, values=option
 injr_combobox.grid(row=5, column=0,  padx=5, pady=5, sticky='e')
 #_______________________________________________________________________________________________________________
 Label(up_frame, text = 'WHP ', bg=bg1).grid(row=6,column=0, padx=5, pady=5, sticky='w')
-whp_entry = ttk.Entry(up_frame) 
+whp_entry = ttk.Entry(up_frame, width=width_entr) 
 whp_entry.grid(row=6, column=1, padx=5, pady=5, sticky='w'+'e'+'n'+'s')
-whp_entry.insert(0, "0")
+whp_entry.insert(0, "50")
 
 options_whp = ["bar", "psi", "kPa"]
 whp_units = StringVar(value=options_whp[0])
 whp_combobox = ttk.Combobox (up_frame, textvariable = whp_units, values=options_whp, width=3,)
 whp_combobox.grid(row=6, column=0,  padx=5, pady=5, sticky='e')
 #_______________________________________________________________________________________________________________
-Label(up_frame, text = 'Fluid density ', bg=bg1).grid(row=7, column=0, padx=5, pady=5, sticky='w')
-density_entry = ttk.Entry(up_frame) 
-density_entry.grid(row=7, column=1, padx=5, pady=5, sticky='w'+'e'+'n'+'s')
+Label(up_frame, text = 'Annular Pressure ', bg=bg1).grid(row=6,column=2, padx=2, pady=2, sticky='w')
+anp_entry = ttk.Entry(up_frame, width=7) 
+anp_entry.grid(row=6, column=3, padx=5, pady=5, sticky='w'+'e'+'n'+'s')
+anp_entry.insert(0, "25")
+
+options_anp = ["bar", "psi", "kPa"]
+anp_units = StringVar(value=options_anp[0])
+anp_combobox = ttk.Combobox (up_frame, textvariable = anp_units, values=options_anp, width=3,)
+anp_combobox.grid(row=6, column=2,  padx=2, pady=2, sticky='e')
+#_______________________________________________________________________________________________________________
+Label(up_frame, text = 'Oil density ', bg=bg1).grid(row=7, column=0, padx=5, pady=5, sticky='w')
+oil_density_entry = ttk.Entry(up_frame, width=width_entr) 
+oil_density_entry.grid(row=7, column=1, padx=5, pady=5, sticky='w'+'e'+'n'+'s')
+oil_density_entry.insert(0, "820")
+
+options_oil_den = ["kg/m\u00B3", "g/cm\u00B3", "lb/ft\u00B3", "lb/gal"]
+oil_density_units = StringVar(value=options_oil_den[0])
+oil_den_combobox = ttk.Combobox (up_frame, textvariable = oil_density_units, values=options_oil_den, width=6)
+oil_den_combobox.grid(row=7, column=0,  padx=5, pady=5, sticky='e')
+#_______________________________________________________________________________________________________________
+Label(up_frame, text = 'ESP depth ', bg=bg1).grid(row=7, column=2, padx=2, pady=2, sticky='w')
+esp_depth_entry = ttk.Entry(up_frame, width=7) 
+esp_depth_entry.grid(row=7, column=3, padx=5, pady=5, sticky='w'+'e'+'n'+'s')
+esp_depth_entry.insert(0, "1600")
+
+options_esp_depth = ["m", "ft"]
+esp_depth_units = StringVar(value=options_esp_depth[0])
+esp_depth_combobox = ttk.Combobox (up_frame, textvariable = esp_depth_units, values=options_esp_depth, width=4)
+esp_depth_combobox.grid(row=7, column=2,  padx=2, pady=2, sticky='e')
+#_______________________________________________________________________________________________________________
+Label(up_frame, text = 'Fluid density ', bg=bg1).grid(row=8, column=0, padx=5, pady=5, sticky='w')
+density_entry = ttk.Entry(up_frame, width=width_entr) 
+density_entry.grid(row=8, column=1, padx=5, pady=5, sticky='w'+'e'+'n'+'s')
 density_entry.insert(0, "1000")
 
 options_den = ["kg/m\u00B3", "g/cm\u00B3", "lb/ft\u00B3", "lb/gal"]
 density_units = StringVar(value=options_den[0])
 den_combobox = ttk.Combobox (up_frame, textvariable = density_units, values=options_den, width=6)
-den_combobox.grid(row=7, column=0,  padx=5, pady=5, sticky='e')
+den_combobox.grid(row=8, column=0,  padx=5, pady=5, sticky='e')
 #_______________________________________________________________________________________________________________
-Label(up_frame, text = 'Viscosity at 300rpm ', bg=bg1).grid(row=8, column=0, padx=5, pady=5, sticky='w')
-mud_visc_300_entry = ttk.Entry(up_frame, state=ACTIVE) 
-mud_visc_300_entry.grid(row=8, column=1, padx=5, pady=5, sticky='w'+'e'+'n'+'s')
-mud_visc_300_entry.insert(0, "20")
+Label(up_frame, text = 'Dinamic Fluid Level ', bg=bg1).grid(row=8, column=2, padx=2, pady=2, sticky='w')
+dfl_entry = ttk.Entry(up_frame, width=7) 
+dfl_entry.grid(row=8, column=3, padx=5, pady=5, sticky='w'+'e'+'n'+'s')
+dfl_entry.insert(0, "1000")
 
-Label(up_frame, text = 'Viscosity at 3rpm ', bg=bg1).grid(row=9, column=0, padx=5, pady=5, sticky='w')
-mud_visc_3_entry = ttk.Entry(up_frame, state=ACTIVE) 
-mud_visc_3_entry.grid(row=9, column=1, padx=5, pady=5, sticky='w'+'e'+'n'+'s')
-mud_visc_3_entry.insert(0, "3")
+options_dfl = ["m", "ft"]
+dfl_units = StringVar(value=options_dfl[0])
+dfl_combobox = ttk.Combobox (up_frame, textvariable = dfl_units, values=options_dfl, width=4)
+dfl_combobox.grid(row=8, column=2, padx=2, pady=2, sticky='e')
+#_______________________________________________________________________________________________________________
+Label(up_frame, text = 'Viscosity at 300rpm ', bg=bg1).grid(row=9, column=0, padx=5, pady=5, sticky='w')
+mud_visc_300_entry = ttk.Entry(up_frame, state=DISABLED, width=width_entr) 
+mud_visc_300_entry.grid(row=9, column=1, padx=5, pady=5, sticky='w'+'e'+'n'+'s')
 
+Label(up_frame, text = 'Viscosity at 3rpm ', bg=bg1).grid(row=10, column=0, padx=5, pady=5, sticky='w')
+mud_visc_3_entry = ttk.Entry(up_frame, state=DISABLED, width=width_entr) 
+mud_visc_3_entry.grid(row=10, column=1, padx=5, pady=5, sticky='w'+'e'+'n'+'s')
 #_______________________________________________________________________________________________________________
 
 #Блок перфорации
@@ -379,9 +487,9 @@ spm_entry = ttk.Entry(right_frame_1, width=6)
 spm_entry.grid(row=3, column=1, padx=1, pady=1, sticky='w'+'e'+'n'+'s')
 spm_entry.insert(0, "20")
 
-Label(right_frame_2, text='Length ', bg=bg3, font='Arial 8').grid(row=4, column=0, padx=0, pady=0, sticky='w'+'e'+'n'+'s')
-pl_entry = ttk.Entry(right_frame_2, width=3)
-pl_entry.grid(row=4, column=2, padx=10, pady=0, sticky='e')
+Label(right_frame_2, text='Length                         ', bg=bg3, font='Arial 8').grid(row=4, column=0, padx=0, pady=0, sticky='w'+'e'+'n'+'s')
+pl_entry = ttk.Entry(right_frame_2, width=6)
+pl_entry.grid(row=4, column=2, padx=5, pady=0, sticky='e')
 pl_entry.insert(0, "0.7")
 
 options_pl = ["m", "ft"]
@@ -389,10 +497,9 @@ pl_units = StringVar(value=options_pl[0])
 pl_combobox = ttk.Combobox (right_frame_2, textvariable = pl_units, values=options_pl, width=2, font='Arial 8')
 pl_combobox.grid(row=4, column=1,  padx=0, pady=0, sticky='w')
 
-
-Label(right_frame_3, text='Hole size ', bg=bg3, font='Arial 8').grid(row=5, column=0, padx=0, pady=0, sticky='w'+'e'+'n'+'s')
-dp_entry = ttk.Entry(right_frame_3, width=4)
-dp_entry.grid(row=5, column=3, padx=10, pady=0, sticky='e')
+Label(right_frame_3, text='Hole size                 ', bg=bg3, font='Arial 8').grid(row=5, column=0, padx=0, pady=0, sticky='w'+'e'+'n'+'s')
+dp_entry = ttk.Entry(right_frame_3, width=6)
+dp_entry.grid(row=5, column=3, padx=5, pady=0, sticky='e')
 dp_entry.insert(0, "8")
 
 options_dp = ["mm", "in"]
@@ -402,9 +509,9 @@ dp_combobox.grid(row=5, column=1,  padx=0, pady=0, sticky='w')
 
 #_______________________________________________________________________________________________________________
 Checkbutton(up_frame, text="Injection well", variable=type_well, bg=bg1, command=injection_well_flag, activebackground=bg1, font='Arial 9 bold').grid(row=1, column=2, sticky='w')
-Checkbutton(up_frame, text="Newtonian fluid", variable=fluid_type, command=flag_fluid_type, bg=bg1, activebackground=bg1).grid(row=8, column=2, sticky='w')
+Checkbutton(up_frame, text="Newtonian fluid", variable=fluid_type, command=flag_fluid_type, bg=bg1, activebackground=bg1).grid(row=9, column=2, sticky='w')
 
-Button(up_frame, text="Clear", command=Clear).grid(row=9, column=2, padx=2, pady=2, sticky='w'+'e'+'n'+'s')
+Button(up_frame, text="Clear", command=Clear).grid(row=10, column=2, padx=2, pady=2, sticky='w'+'e'+'n'+'s')
 Button(down_frame, text="Calculate", command=Calculate, width=30).grid(row=2, column=0, padx=5, pady=5, sticky='w')
 Button(down_frame, text="Save", command=save_file).grid(row=2, column=0, padx=5, pady=5, sticky='e')
 
@@ -416,8 +523,8 @@ Button(down_frame, text="Save", command=save_file).grid(row=2, column=0, padx=5,
 # # Создаю переключатель и надпись
 # switch_btn = Button(up_frame, image=switch_off_img, command=toggle_switch, border=0, bg=bg1, activebackground=bg1, height=30)
 # switch_btn.grid(row=7, column=2, sticky='e')
-btn_switch = Checkbutton(up_frame, text='Electrical Submersible Pump ', variable=switch_btn, bg=bg1, activebackground=bg1)
-btn_switch.grid(row=6, column=2, sticky='w')
+btn_switch = Checkbutton(up_frame, text='ESP', variable=switch_btn, bg=bg1, activebackground=bg1, command=ESP_off) #Electrical Submersible Pump 
+btn_switch.grid(row=1, column=2, sticky='e')
 # Label(up_frame, text='OFF | ON', bg=bg1, font='Arial 6').grid(row=6, column=2, sticky='se', padx=0, pady=0)
 
 #окно вывода результатов
