@@ -1,4 +1,4 @@
-### Скрипт расчета забойного давления для добывающих и нагнетательных скважин
+## Bottomhole Pressure Calculation Script for Production and Injection Wells
 
-В ходе работы добывающих и нагнетательных скважин в лифте НКТ и интервале перфорации возникают потери на трение. Их учет необходим в определении забойного давления в скважине.
-Данный скрипт выполняет расчет забойного давления в скважине с учетом потерь на трение в трубах и интервале перфорации.
+
+During the operation of production and injection wells, friction losses occur in the tubing elevator and the perforation interval. Their consideration is necessary in defining bottomhole pressure. This script calculates downhole pressure with allowance for friction losses in the tubing and perforating interval.
