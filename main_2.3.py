@@ -5,7 +5,7 @@ import math
 import csv
 from tkinter import filedialog
 import os
-#from tkinter.messagebox import showinfo
+from tkinter import messagebox
 
 window = Tk()
 window.title ('Calculate well pressure and frictional losses')
@@ -535,7 +535,8 @@ st.grid(row=1, padx=5, pady=5, sticky='w'+'e'+'n'+'s')
 def calculator():
     os.system("C:/WINDOWS/System32/calc.exe")
     return
-
+def show_about():
+    messagebox.showinfo(title="About", message="Version: 2.3\nAuthor: Stanislav Nikulin\nTelegram: @stan_nikulin\nDate: 2023\nLicense: MIT")
 #меню
 menu_bar = Menu(window)
 
@@ -552,7 +553,7 @@ edit_menu.add_command(label="Calculator", command=calculator)
 menu_bar.add_cascade(label="Options", menu=edit_menu)
 
 help_menu = Menu(menu_bar, tearoff=0)
-help_menu.add_command(label="About...")
+help_menu.add_command(label="About...", command=show_about)
 menu_bar.add_cascade(label="Help", menu=help_menu)
 
 window.config(menu=menu_bar)
